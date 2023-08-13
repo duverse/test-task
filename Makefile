@@ -28,9 +28,9 @@ test-units: test-api-units test-detector-units
 build:
 	@docker-compose build
 
-# Run application locally with two celery and flask workers
+# Run application locally with two celery workers
 start:
-	@docker-compose up --scale celery-worker=2 --scale flask=2
+	@docker-compose up --scale celery-worker=2
 
 # Stop application
 stop:

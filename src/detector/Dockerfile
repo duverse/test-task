@@ -5,9 +5,9 @@ FROM python:3.8
 WORKDIR /app
 
 # Copy the local files to the working directory
+COPY tools/ ./tools
 COPY app.py ./app.py
 COPY settings.py ./settings.py
-COPY detector.py ./detector.py
 COPY requirements.txt ./requirements.txt
 COPY requirements.detectron.txt ./requirements.detectron.txt
 

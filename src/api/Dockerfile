@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Copy the local files to the working directory
 COPY ./templates ./templates
-COPY ./api ./api
+COPY ./tools ./tools
 COPY app.py ./app.py
 COPY settings.py ./settings.py
 COPY requirements.txt ./requirements.txt

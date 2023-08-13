@@ -15,7 +15,7 @@ Architecture
 ---
 
 - **Nginx** configured as a load balancer and proxies requests using uwsgi_pass module.
-- **Flask** is a API facade service. You can run as much flask instances as you want, to handle more requests simultaneously.
+- **Flask** is API facade service. You can run as much flask instances as you want, to handle more requests simultaneously. Flask processes are managed by uWSGI.
 - **Celery** is used as a task manager to be able to scale number of working processes that are processing video frames. 
 - **Redis** is used as a celery broker and results backend.
 
