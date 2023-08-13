@@ -1,0 +1,1 @@
+detectron2 @ git+https://github.com/facebookresearch/detectron2.git@32a186ebc229a94a8090e48ff3dd427f7eadb330
