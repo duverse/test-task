@@ -21,7 +21,7 @@ Architecture
 
 Flow diagram: https://drive.google.com/file/d/1kmBZmQEzxumrb2dj1x_AubyaQPZUiYYn/view?usp=sharing
 
-![](/home/maxon/Bucket/test-task/flow.png)
+![](flow.png)
 
 Make commands
 ===
