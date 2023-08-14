@@ -1,9 +1,6 @@
 # Use the official image for Python 3.8
 FROM python:3.8
 
-# Install some opencv deps
-RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
-
 # Set the working directory inside the container
 WORKDIR /app
 

@@ -1,6 +1,9 @@
 # Use the official image for Python 3.8
 FROM python:3.8
 
+# Install some opencv deps
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
+
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -11,9 +14,11 @@ COPY settings.py ./settings.py
 COPY requirements.txt ./requirements.txt
 COPY requirements.detectron.txt ./requirements.detectron.txt
 
-# Optionally, you might want to install any required packages
+# Install project dependencies
 RUN pip install -r ./requirements.txt --no-cache-dir
+
+# Install Detectron2 last to avoid dependencies undefined errors
 RUN pip install -r ./requirements.detectron.txt --no-cache-dir
 
-# Command to run your application
-CMD ["celery", "-A", "app.app", "worker", "--concurrency=1", "--pool", "solo", "--loglevel=info"]
+# Run celery worker with pool solo, as it works well with detectron
+CMD ["celery", "-A", "app.app", "worker", "--pool", "solo", "--loglevel=info"]

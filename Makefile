@@ -22,7 +22,7 @@ test-detector-units:
 test-pylint: test-pylint-api test-pylint-detector
 
 # Run app unit tests
-test-units: test-api-units test-detector-units
+test-units: test-detector-units
 
 # Rebuild application
 build:

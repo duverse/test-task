@@ -8,15 +8,3 @@ def tests_root():
     return os.path.dirname(__file__)
 
 
-@pytest.fixture
-def valid_video(tests_root):
-    """Returns path to the valid test video"""
-    return os.path.join(tests_root, 'resources', 'video.mp4')
-
-
-@pytest.fixture
-def invalid_video(tests_root):
-    """Returns path to some invalid file (not video)"""
-    return os.path.join(tests_root, '__init__.py')
-
-

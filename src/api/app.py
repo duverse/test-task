@@ -1,19 +1,27 @@
 """Main Flask application"""
-import os
-import time
 import string
 import logging
 
 import nanoid
+from celery import Celery
 from flask import Flask, render_template, request, jsonify
+from redis.client import Redis
 
 import settings
-from tools import frame_reader, detectron_client
+from tools.task import TaskManager, UndefinedTaskID
 
 
 logger = logging.getLogger(__name__)
 
+# Initialize flask application
 app = Flask(__name__, template_folder='templates')
+
+# Initialize celery application
+celery = Celery('detectron', broker=settings.CELERY_BROKER_URL,
+                backend=settings.CELERY_RESULTS_BACKEND)
+
+# Initialize task manager
+task_manager = TaskManager(celery, Redis.from_url(settings.PIPELINE_DB))
 
 
 @app.route('/', methods=['GET'])
@@ -28,8 +36,7 @@ def home():
 
 @app.route('/detector/', methods=['POST'])
 def detector():
-    """Detect cats and dogs API"""
-    request_start = time.time()
+    """Schedule a task to detect objects on video"""
     uploaded_file = request.files.get('video')
 
     # Validate file format
@@ -47,23 +54,34 @@ def detector():
         ), 400
 
     # Save uploaded file
-    temp_video_path = f'{nanoid.generate(string.ascii_letters, size=12)}.mp4'
+    temp_video_path = f'/tmp/{nanoid.generate(string.ascii_letters, size=12)}.mp4'
     uploaded_file.save(temp_video_path)
 
-    # Read & Process frames
-    with frame_reader.VideoFrameReader(temp_video_path) as video_frames_reader:
-        logger.info('New objects detection task received.')
-        logger.info('Video frames count: %d', len(video_frames_reader.frame_files))
-        response = detectron_client.detect_batch(video_frames_reader.frame_files)
-
-    # Remove temp video file
-    os.remove(temp_video_path)
+    # Schedule video processing
+    task_state = task_manager.create_task(video_path=temp_video_path)
 
     return jsonify(
-        time=time.time() - request_start,
-        frames_count=len(response),
-        objects=response,
+        task_id=task_state.id,
     )
+
+
+@app.route('/detector/<string:task_id>', methods=['GET'])
+def detector_result(task_id: str):
+    """Retrieve task state"""
+    try:
+        task = task_manager.get_task(task_id)
+    except UndefinedTaskID:
+        return jsonify(
+            error=102,
+            message=f"Task with ID \"{task_id}\" is not defined"
+        ), 400
+
+    # Build a response
+    response = task.to_dict()
+    response['frames_processed'] = task.processed_frames_count()
+    response['frames'] = list(sorted(task.list_frames(), key=lambda x: x['id']))
+
+    return jsonify(response)
 
 
 if __name__ == '__main__':

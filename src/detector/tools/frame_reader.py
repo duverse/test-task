@@ -28,31 +28,18 @@ class VideoFrameReader:
     def __init__(self, video_path: str):
         self.video_path = video_path
 
-        self._frames_files = []
-
-    def __enter__(self) -> 'VideoFrameReader':
+    def read(self) -> list:
         """Read specified video, save frames and return itself"""
+        frames_files = []
         for i, frame_arr in enumerate(self._read_video_frames(self.video_path)):
             frame_file_name = self._create_frame_name()
             with open(frame_file_name, 'wb') as frame_file:
                 pickle.dump(frame_arr, frame_file)
-                self._frames_files.append(frame_file_name)
+                frames_files.append(frame_file_name)
 
                 logger.debug('Saved frame #%d to %s', i, frame_file_name)
 
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Clean temp files"""
-        for frame_file in self._frames_files:
-            os.remove(frame_file)
-
-        self._frames_files = []
-
-    @property
-    def frame_files(self) -> typing.List[str]:
-        """Returns a list of dumped frame files"""
-        return self._frames_files
+        return frames_files
 
     def _create_frame_name(self) -> str:
         """Generates a random frame file name"""

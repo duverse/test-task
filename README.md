@@ -19,6 +19,10 @@ Architecture
 - **Celery** is used as a task manager to be able to scale number of working processes that are processing video frames. 
 - **Redis** is used as a celery broker and results backend.
 
+Flow diagram: https://drive.google.com/file/d/1kmBZmQEzxumrb2dj1x_AubyaQPZUiYYn/view?usp=sharing
+
+![](/home/maxon/Bucket/test-task/flow.png)
+
 Make commands
 ===
 

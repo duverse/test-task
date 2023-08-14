@@ -1,0 +1,11 @@
+celery==5.3.1
+Flask==2.3.2
+uWSGI==2.0.22
+nanoid==2.0.0
+redis==4.6.0
+torch==2.0.1
+torchvision==0.15.2
+opencv-python==4.8.0.76
+pytest==7.4.0
+
+detectron2 @ git+https://github.com/facebookresearch/detectron2.git@32a186ebc229a94a8090e48ff3dd427f7eadb330

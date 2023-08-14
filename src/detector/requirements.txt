@@ -1,4 +1,6 @@
 redis==4.6.0
 celery==5.3.1
+nanoid==2.0.0
 torch==2.0.1
 torchvision==0.15.2
+opencv-python==4.8.0.76
